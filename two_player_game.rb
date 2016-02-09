@@ -2,6 +2,10 @@ require 'pry'
 require 'colorize'
 
 #binding.pry
+
+# @players = [Player.new, Player.new]
+# @curentPlayer = 0
+
 @player_life_score = [
   {
     :name => "Player 1",
@@ -18,6 +22,14 @@ require 'colorize'
 ]
 @correct_answer = 0
 @turn = 0
+
+# def changePlayer
+#   if @curentPlayer == @players.size - 1
+#     @curentPlayer = 0
+#   else
+#     @curentPlayer += 1
+#   end
+# end
 
 def game_of_two
   puts "Welcome to game of two!"
