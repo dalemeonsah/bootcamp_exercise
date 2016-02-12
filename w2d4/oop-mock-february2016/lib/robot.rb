@@ -4,8 +4,9 @@ class Robot
   MAX_HEALTH = 100
   MAX_SHIELD = 50
 
-  attr_accessor :position, :items, :health, :equipped_weapon, :shield
-  attr_reader :robot_list
+  @robot_list = []
+  
+  attr_accessor :position, :items, :health, :equipped_weapon, :shield, :robot_list
 
   def initialize
     @position = [0, 0]
@@ -15,8 +16,14 @@ class Robot
     @shield = 50
   end
 
+  def self.in_position(x, y)
+    all_robot_in_position = []
+    @robot_list.each do |robot|
+      all_robot_in_position << robot if (robot.position[0] == x) && (robot.position[1] == y)
+    end
+  end
+
   def self.add_robot(robot)
-    @robot_list = []
     @robot_list << robot
   end
 
