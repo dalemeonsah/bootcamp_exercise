@@ -9,7 +9,7 @@ describe Robot do
   describe "#heal!" do
     it "should raise an exception if robot's health <= 0" do
       expect(@robot).to receive(:health).and_return(0)
-      expect{@robot.heal!}.to raise_error(Robot::RobotAlreadyDeadError, "Health is 0 or less now!")
+      expect{@robot.heal!}.to raise_error(RobotAlreadyDeadError, "Health is 0 or less now!")
     end
   end
 

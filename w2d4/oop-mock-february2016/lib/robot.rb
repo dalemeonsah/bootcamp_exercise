@@ -2,8 +2,10 @@ class Robot
   MAX_WEIGHT = 250
   DEFAULT_ATTACK = 5
   MAX_HEALTH = 100
+  MAX_SHIELD = 50
 
   attr_accessor :position, :items, :health, :equipped_weapon, :shield
+  attr_reader :robot_list
 
   def initialize
     @position = [0, 0]
@@ -13,15 +15,18 @@ class Robot
     @shield = 50
   end
 
-  class RobotAlreadyDeadError < StandardError
+  def self.add_robot(robot)
+    @robot_list = []
+    @robot_list << robot
+  end
+
+  def self.total_robot
+    @robot_list.size
   end
 
   def heal!
-    begin
     raise RobotAlreadyDeadError, "Health is 0 or less now!" if self.health <= 0
-    rescue StandardError
     heal(20)
-    end
   end
 
   def attack!(robot)
@@ -52,9 +57,24 @@ class Robot
   end
 
   def wound(decrease_health)
-    @health -= decrease_health
-    if @health < 0
-      @health = 0
+    if @shield > 0
+      @shield -= decrease_health
+      if @shield < 0 
+        @shield = 0
+      end
+
+    else
+      @health -= decrease_health
+      if @health < 0
+        @health = 0
+      end
+    end
+  end
+
+  def heal_shield(increase_shield)
+    @shield += increase_shield
+    if @shield > MAX_SHIELD
+      @shield = MAX_SHIELD
     end
   end
 

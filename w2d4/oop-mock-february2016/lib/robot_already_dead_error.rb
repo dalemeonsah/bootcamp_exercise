@@ -1,2 +1,2 @@
-# class RobotAlreadyDeadError < StandardError
-# end
+class RobotAlreadyDeadError < StandardError
+end
