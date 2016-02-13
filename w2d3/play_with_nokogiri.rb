@@ -45,9 +45,9 @@ def extract_days_ago(doc)
   days.size
 end
 
-puts extract_comment(doc)
-puts extract_author(doc)
-puts extract_days_ago(doc)
+# puts extract_comment(doc)
+# puts extract_author(doc)
+# puts extract_days_ago(doc)
 
 # url = 'http://ruby-doc.org/stdlib-2.0.0/libdoc/open-uri/rdoc/OpenURI.html'
 # html = open(url)

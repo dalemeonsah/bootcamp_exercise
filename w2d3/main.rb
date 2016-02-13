@@ -2,26 +2,40 @@ require_relative 'post'
 require_relative 'comment'
 require_relative 'scraper'
 
-doc = Nokogiri::HTML(File.open('post.html'))
+class Scraper
+  #doc = Nokogiri::HTML(File.open('post.html'))
 
-# variables for Post object
-title = extract_title(doc)
-url = extract_url(doc)
-points = extract_points(doc)
-post_id = extract_item_id(doc)
+  url_input = ARGV[0]
 
-# variables for Comment object
-authors = extract_author(doc)
-comments = extract_comment(doc)
-days_ago = extract_days_ago(doc)
+  unless ARGV.length != 1
+    # variables for Post object
+    doc = Nokogiri::HTML(open(url_input))
 
-first_post = Post.new(title, url, points, post_id)
+    title = extract_title(doc)
+    url = extract_url(doc)
+    points = extract_points(doc)
+    post_id = extract_item_id(doc)
 
-# create a loop to create a new Comment object
-[authors, comments, days_ago].transpose.each do |author, comment, day|
-  comment_object = Comment.new(author,comment,day)
-  first_post.add_comment(comment_object)
+    # variables for Comment object
+    authors = extract_author(doc)
+    comments = extract_comment(doc)
+    days_ago = extract_days_ago(doc)
+
+    first_post = Post.new(title, url, points, post_id)
+
+    # create a loop to create a new Comment object
+    [authors, comments, days_ago].transpose.each do |author, comment, day|
+      comment_object = Comment.new(author,comment,day)
+      first_post.add_comment(comment_object)
+    end
+
+    puts "Post title: #{first_post.title}"
+    puts "Post url is #{first_post.url}"
+    puts "This post has #{first_post.points}"
+    puts "Number of comments: #{comments.size}"
+
+    #puts first_post.comments[0].content
+  else
+    puts "please insert a url, use this https://news.ycombinator.com/item?id=7663775"
+  end
 end
-
-# puts first_post.title
-puts first_post.comments[0].content
