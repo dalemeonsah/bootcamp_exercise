@@ -36,7 +36,6 @@ class ContactList
     end
   when "update"
     unless param.nil? || param.empty?
-      # TODO
       the_contact = Contact.find(param)
       puts "Please change information for #{the_contact}"
       puts "Please update the name"
@@ -52,13 +51,23 @@ class ContactList
     else
       puts "Please input a param"
     end
+  when "destroy"
+    unless param.nil? || param.empty?
+      #TODO
+      the_contact = Contact.find(param)
+      the_contact.destroy
+      puts "Information for #{the_contact} has been deleted"
+    else
+      puts "Please input a param"
+    end
   else
     puts "Here is a list of available commands:"
-    puts "  new    - Create a new contact"
-    puts "  list   - List all contacts"
-    puts "  show   - Show a contact"
-    puts "  search - Search contacts"
-    puts "  update - Update a specific id"
+    puts "  new     - Create a new contact"
+    puts "  list    - List all contacts"
+    puts "  show    - Show a contact"
+    puts "  search  - Search contacts using a parameter"
+    puts "  update  - Update a specific id"
+    puts "  destroy - Delete a specific id"
   end
 
 end

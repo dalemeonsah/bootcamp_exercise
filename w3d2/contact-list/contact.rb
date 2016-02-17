@@ -42,6 +42,10 @@ class Contact
     end
   end
 
+  def destroy
+    Contact.connection.exec_params("DELETE FROM contacts WHERE id = $1::int;", [id]) 
+  end
+
   # Provides functionality for managing a list of Contacts in a database.
   class << self
 
