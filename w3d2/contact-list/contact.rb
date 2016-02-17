@@ -100,7 +100,7 @@ class Contact
         "not found"
       else
         contact_find << '---'
-        contact_find << "#{contact_find.length-1} records total"
+        contact_find << "#{contact_find.length-1} records total that has phone number"
       end
 
     end

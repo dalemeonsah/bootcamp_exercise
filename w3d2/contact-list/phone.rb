@@ -27,5 +27,18 @@ class Phone
       end
     end
 
+    def all_related_contact
+      all_contact_numbers = []
+
+      result = Contact.connection.exec('SELECT c.name, p.number FROM contacts AS c JOIN phone as p ON c.id = p.contact_id ;')
+
+      result.each do |contact_number|
+        all_contact_numbers << contact_number
+      end
+
+      all_contact_numbers << '---'
+      all_contact_numbers << "#{all_contact_numbers.length-1} records total"
+    end
+
   end
 end

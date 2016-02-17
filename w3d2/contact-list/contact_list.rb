@@ -14,6 +14,8 @@ class ContactList
   case command
   when "list"
     puts Contact.all
+    puts '---------'
+    puts Phone.all_related_contact
   when "show"
     unless param.nil? || param.empty?
       puts Contact.find(param)
