@@ -90,13 +90,8 @@ class Contact
     # Returns an array of contacts who match the given term.
     def search(term)
       # Select the Contact instances from the 'contacts.csv' file whose name or email attributes contain the search term.
-      # contacts = CSV.read('./contacts.csv')
       contact_find = []
-      # find_contact = contacts.map do |array| 
-      #   if array[1].include?(term) || array[2].include?(term)
-      #     contact_find << Contact.new(array[0], array[1], array[2])
-      #   end
-      # end
+
       result = connection.exec("SELECT * FROM contacts WHERE name like '%' || $1 || '%' OR email like '%' || $1 || '%';", [term])
       result.each do |found|
         contact_find << Contact.new(found["id"], found["name"], found["email"])
