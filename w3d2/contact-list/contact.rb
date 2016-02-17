@@ -1,20 +1,45 @@
 require 'csv'
 require 'pry'
+require 'pg'
 
 # Represents a person in an address book.
 class Contact
 
   attr_accessor :id, :name, :email
 
-  def initialize(id, name, email)
+  def initialize(id = nil, name, email)
     # Assign parameter values to instance variables.
     @id = id
     @name = name
     @email = email
   end
 
+  def self.connection
+    connection = PG.connect(
+      host: 'localhost',
+      dbname: 'contact',
+      user: 'development',
+      password: 'development'
+    )
+    connection
+    #connection.close
+  end
+
   def to_s
     "#{id}: #{name} (#{email})"
+  end
+
+  def persisted?
+    !id.nil?
+  end
+
+  def save
+    if persisted?
+      Contact.connection.exec_params("UPDATE contacts SET name = $1, email = $2 WHERE id = $3::int;", [@name, @email, @id]) 
+    else
+      result = Contact.connection.exec_params('INSERT INTO contacts (name, email) VALUES ($1, $2) RETURNING id;', [name, email])
+      @id = result[0]["id"]
+    end
   end
 
   # Provides functionality for managing a list of Contacts in a database.
@@ -23,62 +48,55 @@ class Contact
     # Returns an Array of Contacts loaded from the database.
     def all
       # Return an Array of Contact instances made from the data in 'contacts.csv'.
-      contacts = []
-      CSV.foreach('contacts.csv') do |row|
-        # puts row.inspect
-        contacts << Contact.new(row[0], row[1], row[2])
-        #Contact.new(row[0], row[1])
+      all_contacts = []
+
+      result = connection.exec('SELECT * FROM contacts;')
+
+      result.each do |contact|
+        all_contacts << Contact.new(contact["id"], contact["name"], contact["email"])
       end
-      contacts << '---'
-      contacts << "#{contacts.length-1} records total"
+
+      all_contacts << '---'
+      all_contacts << "#{all_contacts.length-1} records total"
     end
 
     # Creates a new contact, adding it to the database, returning the new contact.
     def create(name, email)
       # Instantiate a Contact, add its data to the 'contacts.csv' file, and return it.
-      new_contact = Contact.new(create_new_id, name, email) 
-      CSV.open('contacts.csv', "a") do |csv|
-        csv << [new_contact.id, new_contact.name, new_contact.email]
-      end
-    end
-
-    def create_new_id
-      contact = CSV.read('./contacts.csv')
-      #puts contact
-      max_id = contact.map{|array|array.first}.max.to_i
-      new_id = max_id + 1
+      new_contact = Contact.new(name, email) 
+      new_contact.save
     end
 
     # Returns the contact with the specified id. If no contact has the id, returns nil.
     def find(id)
-      # Find the Contact in the 'contacts.csv' file with the matching id.
-      contacts = CSV.read('./contacts.csv')
       contact_find = []
-      find_contact = contacts.map do |array| 
-        if array[0] == id
-          contact_find << Contact.new(array[0], array[1], array[2])
-        end
-      end 
+
+      result = connection.exec('SELECT * FROM contacts WHERE id = $1::int;', [id])
+      result.each do |found|
+        contact_find << Contact.new(found["id"], found["name"], found["email"])
+      end
 
       if contact_find.empty?
         "not found"
       else
-        contact_find << '---'
-        contact_find << "#{contact_find.length-1} records total"
+        contact_find[0]
       end
     end
 
     # Returns an array of contacts who match the given term.
     def search(term)
-      # TODO: Select the Contact instances from the 'contacts.csv' file whose name or email attributes contain the search term.
-      contacts = CSV.read('./contacts.csv')
+      # Select the Contact instances from the 'contacts.csv' file whose name or email attributes contain the search term.
+      # contacts = CSV.read('./contacts.csv')
       contact_find = []
-      find_contact = contacts.map do |array| 
-        if array[1].include?(term) || array[2].include?(term)
-          contact_find << Contact.new(array[0], array[1], array[2])
-        end
+      # find_contact = contacts.map do |array| 
+      #   if array[1].include?(term) || array[2].include?(term)
+      #     contact_find << Contact.new(array[0], array[1], array[2])
+      #   end
+      # end
+      result = connection.exec("SELECT * FROM contacts WHERE name like '%' || $1 || '%' OR email like '%' || $1 || '%';", [term])
+      result.each do |found|
+        contact_find << Contact.new(found["id"], found["name"], found["email"])
       end
-
       if contact_find.empty?
         "not found"
       else
