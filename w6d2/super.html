@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Super</title>
+</head>
+<body>
+  <p>Click a hero's name to see more information about them.</p>
+  <ul id="heroes">
+    <li data-universe="DC" data-alias= "Bruce Wayne">Batman</li>
+    <li data-universe="DC" data-alias="Diana Prince">Wonder Woman</li>
+    <li data-universe="Marvel" data-alias="Peter Parker">Spider-man</li>
+  </ul>
+  <dl>
+    <dt>Name</dt>
+    <dd id="hero-name"></dd>
+    <dt>Alias</dt>
+    <dd id="hero-alias"></dd>
+    <dt>Universe</dt>
+    <dd id="hero-universe"></dd>
+  </dl>
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script>
+    $(function(){
+      $('#heroes').on('click', 'li', function(){
+        var clickedLi = $(this);
+        $('#hero-name').text(clickedLi.text());
+        $('#hero-alias').text(clickedLi.data('alias'));
+        $('#hero-universe').text(clickedLi.data('universe'));
+      });
+    });
+  </script>
+</body>
+</html>
