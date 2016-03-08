@@ -1,0 +1,7 @@
+Question 1. Specificity and Cascading
+- Cascading stylesheet is arranging the elements to get specific ui looks. Specificty is the set of rules to cascade these elements. 
+
+Question 2. 3 possible scenarios
+1. There is an inline styles that sets the color to black
+2. Have same exact specificity (e.g. #main h1.alt {color: black}) on the later part
+Have 2 ids 

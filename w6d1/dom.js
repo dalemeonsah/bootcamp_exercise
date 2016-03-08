@@ -1,7 +1,7 @@
 var text = document.getElementById('text');
 var text2 = document.getElementById('text-2');
 //1.
-text2.addEventListener("keypress", function(event){
+text.addEventListener("keypress", function(event){
   // shift key does not trigger keypress event
   //console.log(event);
   if (event.shiftKey) {
@@ -9,7 +9,7 @@ text2.addEventListener("keypress", function(event){
   }
 })
 //2. 
-text2.addEventListener("keydown", function(event){
+text.addEventListener("keydown", function(event){
   // shift key does not trigger keypress event
   if (event.shiftKey) {
     console.log("shift key down")
